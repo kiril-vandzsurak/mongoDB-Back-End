@@ -52,4 +52,17 @@ blogsRouter.put("/:blogId", async (req, res, next) => {
   }
 });
 
+blogsRouter.delete("/:blogId", async (req, res, next) => {
+  try {
+    const deletedBlog = await BlogModel.findByIdAndDelete(req.params.blogId);
+    if (deletedBlog) {
+      res.status(204).send();
+    } else {
+      console.log("error");
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default blogsRouter;
