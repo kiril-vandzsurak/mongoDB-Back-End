@@ -22,4 +22,17 @@ blogsRouter.get("/", async (req, res, next) => {
   }
 });
 
+blogsRouter.get("/:blogId", async (req, res, next) => {
+  try {
+    const blog = await BlogModel.findById(req.params.blogId);
+    if (blog) {
+      res.send(blog);
+    } else {
+      console.log("error");
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default blogsRouter;
