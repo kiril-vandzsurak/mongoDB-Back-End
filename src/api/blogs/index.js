@@ -13,4 +13,13 @@ blogsRouter.post("/", async (req, res, next) => {
   }
 });
 
+blogsRouter.get("/", async (req, res, next) => {
+  try {
+    const blogs = await BlogModel.find();
+    res.send(blogs);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default blogsRouter;
