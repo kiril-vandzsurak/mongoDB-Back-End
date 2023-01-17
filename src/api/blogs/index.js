@@ -35,4 +35,21 @@ blogsRouter.get("/:blogId", async (req, res, next) => {
   }
 });
 
+blogsRouter.put("/:blogId", async (req, res, next) => {
+  try {
+    const updatedBlog = await BlogModel.findByIdAndUpdate(
+      req.params.blogId,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (updatedBlog) {
+      res.send(updatedBlog);
+    } else {
+      console.log("error");
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default blogsRouter;
