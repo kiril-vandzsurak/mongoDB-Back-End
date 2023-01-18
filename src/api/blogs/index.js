@@ -191,4 +191,22 @@ blogsRouter.put(
   }
 );
 
+blogsRouter.delete(
+  "/:blogId/commentsHistory/:commentId",
+  async (req, res, next) => {
+    const updatedBlog = await BlogModel.findByIdAndUpdate(
+      req.params.blogId,
+      { $pull: { commentsHistory: { _id: req.params.commentId } } },
+      { new: true }
+    );
+    if (updatedBlog) {
+      res.send(updatedBlog);
+    } else {
+      next(
+        createHttpError(404, `Blog with id ${req.params.blogId} not found!`)
+      );
+    }
+  }
+);
+
 export default blogsRouter;
