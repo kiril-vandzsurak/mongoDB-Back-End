@@ -107,4 +107,19 @@ blogsRouter.post("/:blogId/commentsHistory", async (req, res, next) => {
   }
 });
 
+blogsRouter.get("/:blogId/commentsHistory", async (req, res, next) => {
+  try {
+    const blog = await BlogModel.findById(req.params.blogId);
+    if (blog) {
+      res.send(blog.commentsHistory);
+    } else {
+      next(
+        createHttpError(404, `Blog with id ${req.params.userId} not found!`)
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default blogsRouter;
