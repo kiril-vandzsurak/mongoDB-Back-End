@@ -8,7 +8,6 @@ const commentSchema = new Schema(
       name: { type: String, required: true },
       surname: { type: String, required: true },
     },
-    asin: { type: String, required: true },
     content: { type: String, required: true },
   },
   { timestamps: true }

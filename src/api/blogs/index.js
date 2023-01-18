@@ -1,6 +1,7 @@
 import express from "express";
 import BlogModel from "./models.js";
 import createHttpError from "http-errors";
+import CommentsModel from "../comments/models.js";
 
 const blogsRouter = express.Router();
 
@@ -65,6 +66,40 @@ blogsRouter.delete("/:blogId", async (req, res, next) => {
     } else {
       next(
         createHttpError(404, `Blog with id ${req.params.blogId} not found!`)
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogsRouter.post("/:blogId/commentsHistory", async (req, res, next) => {
+  try {
+    const writtenComment = await CommentsModel.findById(req.body.commentId, {
+      _id: 0,
+    });
+
+    if (writtenComment) {
+      const commentToLeave = {
+        ...writtenComment.toObject(),
+        commentDate: new Date(),
+      };
+      const updatedBlog = await BlogModel.findByIdAndUpdate(
+        req.params.blogId,
+        { $push: { commentsHistory: commentToLeave } },
+        { new: true, runValidators: true }
+      );
+
+      if (updatedBlog) {
+        res.send(updatedBlog);
+      } else {
+        next(
+          createHttpError(404, `Blog with id ${req.params.userId} not found!`)
+        );
+      }
+    } else {
+      next(
+        createHttpError(404, `Comment with id ${req.params.userId} not found!`)
       );
     }
   } catch (error) {

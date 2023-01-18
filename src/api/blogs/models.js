@@ -22,7 +22,6 @@ const blogSchema = new Schema(
           name: String,
           surname: String,
         },
-        asin: String,
         commentDate: Date,
         content: String,
       },
