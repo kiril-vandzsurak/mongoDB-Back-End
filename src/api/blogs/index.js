@@ -156,4 +156,39 @@ blogsRouter.get(
   }
 );
 
+blogsRouter.put(
+  "/:blogId/commentsHistory/:commentId",
+  async (req, res, next) => {
+    try {
+      const blog = await BlogModel.findById(req.params.blogId);
+      if (blog) {
+        const index = blog.commentsHistory.findIndex(
+          (comment) => comment._id.toString() === req.params.commentId
+        );
+        if (index !== -1) {
+          blog.commentsHistory[index] = {
+            ...blog.commentsHistory[index].toObject(),
+            ...req.body,
+          };
+          await blog.save();
+          res.send(blog);
+        } else {
+          next(
+            createHttpError(
+              404,
+              `Comment with id ${req.params.commentId} not found!`
+            )
+          );
+        }
+      } else {
+        next(
+          createHttpError(404, `Blog with id ${req.params.blogId} not found!`)
+        );
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 export default blogsRouter;
