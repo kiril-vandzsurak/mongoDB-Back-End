@@ -94,12 +94,15 @@ blogsRouter.post("/:blogId/commentsHistory", async (req, res, next) => {
         res.send(updatedBlog);
       } else {
         next(
-          createHttpError(404, `Blog with id ${req.params.userId} not found!`)
+          createHttpError(404, `Blog with id ${req.params.blogId} not found!`)
         );
       }
     } else {
       next(
-        createHttpError(404, `Comment with id ${req.params.userId} not found!`)
+        createHttpError(
+          404,
+          `Comment with id ${req.params.commentId} not found!`
+        )
       );
     }
   } catch (error) {
@@ -114,12 +117,43 @@ blogsRouter.get("/:blogId/commentsHistory", async (req, res, next) => {
       res.send(blog.commentsHistory);
     } else {
       next(
-        createHttpError(404, `Blog with id ${req.params.userId} not found!`)
+        createHttpError(404, `Blog with id ${req.params.blogId} not found!`)
       );
     }
   } catch (error) {
     next(error);
   }
 });
+
+blogsRouter.get(
+  "/:blogId/commentsHistory/:commentId",
+  async (req, res, next) => {
+    try {
+      const blog = await BlogModel.findById(req.params.blogId);
+
+      if (blog) {
+        const writtenComment = blog.commentsHistory.find(
+          (comment) => comment._id.toString() === req.params.commentId
+        );
+        if (writtenComment) {
+          res.send(writtenComment);
+        } else {
+          next(
+            createHttpError(
+              404,
+              `Comment with id ${req.params.commentId} not found!`
+            )
+          );
+        }
+      } else {
+        next(
+          createHttpError(404, `Blog with id ${req.params.blogId} not found!`)
+        );
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default blogsRouter;
