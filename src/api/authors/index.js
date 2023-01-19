@@ -25,7 +25,9 @@ authorsRouter.get("/", async (req, res, next) => {
 
 authorsRouter.get("/:authorId", async (req, res, next) => {
   try {
-    const author = await AuthorsModel.findById(req.params.authorId);
+    const author = await AuthorsModel.findById(req.params.authorId).populate({
+      path: "blogs",
+    });
     if (author) {
       res.send(author);
     } else {
