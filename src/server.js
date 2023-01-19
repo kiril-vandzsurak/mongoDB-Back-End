@@ -9,6 +9,7 @@ import {
   genericErrorHandler,
 } from "./errorHandlers.js";
 import commentsRouter from "./api/comments/index.js";
+import authorsRouter from "./api/authors/index.js";
 
 const server = express();
 const port = process.env.PORT || 3001;
@@ -18,6 +19,7 @@ server.use(express.json());
 
 server.use("/blogs", blogsRouter);
 server.use("/comments", commentsRouter);
+server.use("/authors", authorsRouter);
 
 server.use(badRequestHandler);
 server.use(notFoundHandler);

@@ -209,4 +209,13 @@ blogsRouter.delete(
   }
 );
 
+// blogsRouter.post("/:blogId/author", async (req,res,next) => {
+//   try {
+//     const {blogId} = req.body
+
+//   } catch (error) {
+//     next(error)
+//   }
+// })
+
 export default blogsRouter;
