@@ -25,9 +25,7 @@ authorsRouter.get("/", async (req, res, next) => {
 
 authorsRouter.get("/:authorId", async (req, res, next) => {
   try {
-    const author = await AuthorsModel.findById(req.params.authorId).populate({
-      path: "blogs",
-    });
+    const author = await AuthorsModel.findById(req.params.authorId);
     if (author) {
       res.send(author);
     } else {
@@ -68,6 +66,27 @@ authorsRouter.delete("/:authorId", async (req, res, next) => {
     );
     if (deletedAuthor) {
       res.status(204).send();
+    } else {
+      next(
+        createHttpError(404, `Author with id ${req.params.authorId} not found!`)
+      );
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+authorsRouter.put("/:authorId/addNewBlogs", async (req, res, next) => {
+  try {
+    const updatedAuthor = await AuthorsModel.findByIdAndUpdate(
+      req.params.authorId, // WHO you want to modify
+      { $push: { blogs: req.body.blogId } }, // HOW you want to modify
+      { new: true, runValidators: true } // OPTIONS. By default findByIdAndUpdate returns the record PRE-MODIFICATION. If you want to get back the updated object --> new:true
+      // By default validation is off here --> runValidators: true
+    );
+
+    if (updatedAuthor) {
+      res.send(updatedAuthor);
     } else {
       next(
         createHttpError(404, `Author with id ${req.params.authorId} not found!`)
