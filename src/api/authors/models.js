@@ -27,4 +27,15 @@ authorSchema.pre("save", async function (next) {
   next();
 });
 
+authorSchema.methods.toJSON = function () {
+  const authorDocument = this;
+  const author = authorDocument.toObject();
+
+  delete author.password;
+  delete author.createdAt;
+  delete author.updatedAt;
+  delete author.__v;
+  return author;
+};
+
 export default model("Author", authorSchema);
