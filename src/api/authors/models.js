@@ -38,4 +38,19 @@ authorSchema.methods.toJSON = function () {
   return author;
 };
 
+authorSchema.static("checkCredentials", async function (email, password) {
+  const author = await this.findOne({ email });
+
+  if (author) {
+    const passwordMatch = await bcrypt.compare(password, author.password);
+    if (passwordMatch) {
+      return author;
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+});
+
 export default model("Author", authorSchema);
