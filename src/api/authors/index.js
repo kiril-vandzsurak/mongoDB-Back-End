@@ -8,7 +8,7 @@ import { createAccessToken } from "../../lib/auth/tools.js";
 
 const authorsRouter = express.Router();
 
-authorsRouter.post("/", async (req, res, next) => {
+authorsRouter.post("/register", async (req, res, next) => {
   try {
     const newAuthor = new AuthorsModel(req.body);
     const { _id } = await newAuthor.save();
@@ -18,19 +18,14 @@ authorsRouter.post("/", async (req, res, next) => {
   }
 });
 
-authorsRouter.get(
-  "/",
-  basicAuthMiddleware,
-  adminOnlyMiddleware,
-  async (req, res, next) => {
-    try {
-      const authors = await AuthorsModel.find();
-      res.send(authors);
-    } catch (error) {
-      next(error);
-    }
+authorsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const authors = await AuthorsModel.find();
+    res.send(authors);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 authorsRouter.get("/:authorId", basicAuthMiddleware, async (req, res, next) => {
   try {
@@ -49,8 +44,8 @@ authorsRouter.get("/:authorId", basicAuthMiddleware, async (req, res, next) => {
 
 authorsRouter.put(
   "/:authorId",
-  adminOnlyMiddleware,
   basicAuthMiddleware,
+  adminOnlyMiddleware,
   async (req, res, next) => {
     try {
       const updatedAuthor = await AuthorsModel.findByIdAndUpdate(
@@ -129,5 +124,21 @@ authorsRouter.put("/:authorId/addNewBlogs", async (req, res, next) => {
 //     next(error);
 //   }
 // });
+
+authorsRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const author = await AuthorsModel.checkCredentials(email, password);
+    if (author) {
+      const payload = { _id: author._id, role: author.role };
+      const accessToken = await createAccessToken(payload);
+      res.send({ accessToken });
+    } else {
+      next(createHttpError(401, "Credentials are not ok!"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default authorsRouter;
