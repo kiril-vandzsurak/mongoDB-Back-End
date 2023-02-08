@@ -3,6 +3,8 @@ import createHttpError from "http-errors";
 import AuthorsModel from "./models.js";
 import { basicAuthMiddleware } from "../../lib/auth/basicAuth.js";
 import { adminOnlyMiddleware } from "../../lib/auth/adminOnly.js";
+import { JWTAuthMiddleware } from "../../lib/auth/jwtAuth.js";
+import { createAccessToken } from "../../lib/auth/tools.js";
 
 const authorsRouter = express.Router();
 

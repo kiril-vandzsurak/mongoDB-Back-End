@@ -4,8 +4,9 @@ import cors from "cors";
 import mongoose from "mongoose";
 import blogsRouter from "./api/blogs/index.js";
 import {
-  badRequestHandler,
+  unauthorizedErrorHandler,
   notFoundHandler,
+  forbiddenErrorHandler,
   genericErrorHandler,
 } from "./errorHandlers.js";
 import commentsRouter from "./api/comments/index.js";
@@ -21,8 +22,9 @@ server.use("/blogs", blogsRouter);
 server.use("/comments", commentsRouter);
 server.use("/authors", authorsRouter);
 
-server.use(badRequestHandler);
+server.use(unauthorizedErrorHandler);
 server.use(notFoundHandler);
+server.use(forbiddenErrorHandler);
 server.use(genericErrorHandler);
 
 mongoose.connect(process.env.MONGO_KEY);
