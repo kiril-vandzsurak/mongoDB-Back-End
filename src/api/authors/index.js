@@ -18,8 +18,8 @@ authorsRouter.post("/", async (req, res, next) => {
 
 authorsRouter.get(
   "/",
-  adminOnlyMiddleware,
   basicAuthMiddleware,
+  adminOnlyMiddleware,
   async (req, res, next) => {
     try {
       const authors = await AuthorsModel.find();
