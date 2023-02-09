@@ -38,7 +38,8 @@ authorsRouter.get(
   passport.authenticate("google", { session: false }),
   async (req, res, next) => {
     console.log(req.author);
-    res.redirect(`${process.env.FE_URL}?accessToken=${req.author.accessToken}`);
+    console.log("RREEQQQ::::::", req);
+    res.redirect(`${process.env.FE_URL}?accessToken=${req.user.accessToken}`);
   }
 );
 
