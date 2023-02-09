@@ -11,12 +11,17 @@ import {
 } from "./errorHandlers.js";
 import commentsRouter from "./api/comments/index.js";
 import authorsRouter from "./api/authors/index.js";
+import googleStrategy from "./lib/auth/google.js";
+import passport from "passport";
 
 const server = express();
 const port = process.env.PORT || 3001;
 
+passport.use("google", googleStrategy);
+
 server.use(cors());
 server.use(express.json());
+server.use(passport.initialize());
 
 server.use("/blogs", blogsRouter);
 server.use("/comments", commentsRouter);
