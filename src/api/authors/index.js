@@ -5,6 +5,7 @@ import AuthorsModel from "./models.js";
 import { adminOnlyMiddleware } from "../../lib/auth/adminOnly.js";
 import { JWTAuthMiddleware } from "../../lib/auth/jwtAuth.js";
 import { createAccessToken } from "../../lib/auth/tools.js";
+import passport from "passport";
 
 const authorsRouter = express.Router();
 
@@ -26,6 +27,20 @@ authorsRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
+
+authorsRouter.get(
+  "/googleLogin",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+authorsRouter.get(
+  "/googleRedirect",
+  passport.authenticate("google", { session: false }),
+  async (req, res, next) => {
+    console.log(req.author);
+    res.redirect(`${process.env.FE_URL}?accessToken=${req.author.accessToken}`);
+  }
+);
 
 authorsRouter.get("/:authorId", JWTAuthMiddleware, async (req, res, next) => {
   try {
